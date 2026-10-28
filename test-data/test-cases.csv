@@ -1,0 +1,11 @@
+TestId,Mode,ServiceRouteStation,TripDate,FeedbackType,Rating,Comments,AckEmail,ExpectedRoutedTeam,ExpectedEmailProvided,ExpectedAcknowledgement
+TC01,Bus,Bus 95,2026-10-20,Compliment,5,[TEST TC01] Driver waited for me at the stop. Very kind.,<your own address>,Bus Operations,Yes,Sent to your own address
+TC02,Bus,Bus 190,2026-10-21,Complaint,1,[TEST TC02] Bus did not stop although I signalled.,,Bus Operations,No,Skipped
+TC03,Bus,,2026-10-22,Suggestion,3,[TEST TC03] Please add arrival times at more stops. Route left blank on purpose.,<your own address>,Bus Operations,Yes,Sent to your own address
+TC04,Bus,Bus 151,2026-10-23,Complaint,2,[TEST TC04] Bus was overcrowded during the morning peak.,,Bus Operations,No,Skipped
+TC05,Train,Clementi MRT,2026-10-20,Complaint,2,[TEST TC05] Train delayed about 15 minutes with no announcement.,<your own address>,Rail Operations,Yes,Sent to your own address
+TC06,Train,East-West Line,2026-10-24,Compliment,4,[TEST TC06] Carriages were clean and air-conditioning worked well.,,Rail Operations,No,Skipped
+TC07,Train,Jurong East MRT,2026-10-25,Suggestion,3,[TEST TC07] More signs to the bus interchange exit would help.,<your own address>,Rail Operations,Yes,Sent to your own address
+TC08,Taxi,Taxi from Changi Airport,2026-10-21,Compliment,5,[TEST TC08] Driver helped with luggage and took the fastest route.,<your own address>,Taxi Services,Yes,Sent to your own address
+TC09,Taxi,Taxi stand at Orchard Road,2026-10-26,Complaint,1,[TEST TC09] Waited 25 minutes at the stand with no taxis.,,Taxi Services,No,Skipped
+TC10,Taxi,,2026-10-27,Suggestion,4,[TEST TC10] Show the fare estimate before the trip starts. Location left blank on purpose.,<your own address>,Taxi Services,Yes,Sent to your own address
