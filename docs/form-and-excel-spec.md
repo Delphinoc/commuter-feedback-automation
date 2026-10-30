@@ -1,6 +1,6 @@
 # Form and Excel Specification
 
-The exact spec for the Microsoft Form, the Excel table and the routing rules. Names and spellings matter: the Power Automate flow (Phase 3) matches on them.
+The exact spec for the Microsoft Form, the Excel table and the routing rules. Names and spellings matter: the Power Automate flow matches on them.
 
 ## 1. Microsoft Form
 
@@ -48,8 +48,8 @@ The exact spec for the Microsoft Form, the Excel table and the routing rules. Na
 Design notes:
 
 - **No raw email address column.** The flow reads the address straight from the form response to send the acknowledgement, so the workbook doesn't need to store it. `EmailProvided` records only whether an address was given. That is a fact about the input, not about delivery, so it doesn't claim the email arrived. That's why there's no `AckSent` column.
-- **Header names have no spaces or symbols.** That way they appear cleanly as Power Automate fields and Power BI columns.
-- **`SubmittedAt` is stored in UTC**, as Forms provides it. Converting to local time is optional in Phase 3, and the column header would then say so.
+- **Header names have no spaces or symbols.** That way they appear cleanly as Power Automate dynamic content and table columns.
+- **`SubmittedAt` is stored in UTC**, as Forms provides it. The implemented flow keeps UTC.
 
 ## 3. Routing
 
@@ -61,20 +61,10 @@ Design notes:
 
 The team names are demonstration labels only. The flow writes them to the `RoutedTeam` column and nothing is sent to any team or operator. The Switch has a Default case that writes `Unrouted`, so a renamed option shows up in the data instead of failing silently.
 
-## 4. Schema check against the flow and Power BI
+## 4. Schema check against the flow
 
-**Power Automate (Phase 3)**
-
-- [x] Every column maps directly to one trigger or "Get response details" field, or to one simple expression.
-- [x] The data lives in a formatted table, which "Add a row into a table" requires.
-- [x] Routing needs one Switch on `Mode`, and the three options are fixed choices, so spelling can't drift.
-- [x] The acknowledgement needs one Condition: Q7 is not empty. The same check sets `EmailProvided`.
-
-**Power BI Desktop (Phase 4)**
-
-- [x] It's one flat table with one row per response, so there are no joins or unpivoting.
-- [x] Slicers and bar charts can use `Mode`, `RoutedTeam` and `FeedbackType`, which are low-cardinality text columns.
-- [x] `Rating` is numeric, so "Average of Rating" works with no DAX.
-- [x] `TripDate` is a real date, so a responses-over-time line chart works.
-- [x] `EmailProvided` gives an optional "share who wanted a reply" card.
-- The only Power Query step needed is the automatic "Changed Type". Check that `TripDate` comes in as Date, `SubmittedAt` as Date/Time and `Rating` as Whole Number.
+- Every column maps directly to one trigger or "Get response details" field, or to one simple expression.
+- The data lives in a formatted table, which "Add a row into a table" requires.
+- Routing needs one Switch on `Mode`, and the three options are fixed choices, so spelling can't drift.
+- The acknowledgement needs one Condition on `EmailProvided`, the same value written to the table.
+- It's one flat table with one row per response and typed date and number columns, so it can be filtered, pivoted or charted in Excel without reshaping.

@@ -1,6 +1,8 @@
 # Flow Test Plan
 
-This tests the flow with the 10 synthetic cases in [`../test-data/test-cases.csv`](../test-data/test-cases.csv). Start only after the flow is saved and On, and only after Phase 3 review.
+This tests the flow with the 10 synthetic cases in [`../test-data/test-cases.csv`](../test-data/test-cases.csv). Start only after the flow is saved and On.
+
+> This is the **planned** procedure. The actual run differed in how email addresses were entered, so the results are recorded separately in [test-results.md](test-results.md).
 
 ## Before you start
 
@@ -23,7 +25,7 @@ This tests the flow with the 10 synthetic cases in [`../test-data/test-cases.csv
    - `=ISNUMBER(H2)` to check Rating
 
    **TRUE** means a real date/time or number. **FALSE** means it was stored as text. Delete these check cells afterwards.
-6. If any check is FALSE, **don't continue**. Note which column it was and what the run's Excel step input shows, then report back. The fix is a small expression change, which I'll confirm before you edit anything.
+6. If any check is FALSE, **don't continue**. Note which column it was and what the run's Excel step input shows, then fix the mapping before continuing. For example, wrap the value in `int()` for Rating, or in `formatDateTime()` for a date.
 
 ## Step 2: the remaining 9 cases
 
@@ -46,10 +48,8 @@ Submit TC02 to TC10 in order, waiting about 30 seconds between each. Then wait u
 
 For check 7, open one of the "No" runs, expand **Condition** and confirm which branch ran.
 
-## Step 4: report back
+## Step 4: record the results
 
-Reply in the project thread with:
-- the Pass/Fail for each of the 10 checks
-- for any Fail: the run's failed step name and its error message, copied from run history
+Record the Pass/Fail for each check in [test-results.md](test-results.md). For any Fail, note the failed step's name and its error message from run history.
 
-Don't screenshot or share real email addresses. Your own address appears only in your inbox.
+Don't record or share real email addresses. Your own address only ever appears in your inbox.

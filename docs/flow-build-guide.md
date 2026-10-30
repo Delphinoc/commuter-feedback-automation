@@ -36,7 +36,7 @@ The Excel action comes **before** the email step. A response is always logged, e
 3. Each one should sign in with your work account and then appear in the list with status **Connected**.
 4. While you're there, confirm that none of the three shows a **Premium** diamond label.
 
-**Stop and report back, without building further, if any of these happens:**
+**Stop, and don't build any further, if any of these happens:**
 - a connection can't be created, or shows an error
 - any of the three is labelled Premium, or you're asked to start a trial
 - later, saving the flow shows a message about a **data loss prevention (DLP) policy**
@@ -151,7 +151,7 @@ Submission time from Forms is in UTC, so `SubmittedAt` stays in UTC, as the spec
 
 1. Select **Save**. Read any warning banner. A DLP or licence warning is a stop-and-report point (Part A).
 2. Use **Flow checker** (the stethoscope icon) and fix any errors it lists.
-3. A saved automated flow is **On**. Don't submit any form responses yet. Testing follows the test plan, after review.
+3. A saved automated flow is **On**. Don't submit any form responses yet. Testing follows [flow-test-plan.md](flow-test-plan.md).
 
 ---
 
@@ -177,4 +177,4 @@ Kept simple on purpose, with no retries or extra error handling:
 | The row appears late | The Excel connector can take up to about 30 seconds to show changes | Refresh the workbook after a short wait |
 | Send email fails | Bad address, or the Outlook connection has expired | Check the address. Open **Connections** and fix the Outlook connection if it shows an error |
 | "Connection not authorised" or "Fix connection" banner | A connection's sign-in has expired | Re-sign the connection under **Connections** |
-| A DLP policy message on save | A tenant policy is blocking a connector | Stop and report. This is an organisation setting, not something to work around |
+| A DLP policy message on save | A tenant policy is blocking a connector | Stop. This is an organisation setting, so ask your IT admin rather than working around it |

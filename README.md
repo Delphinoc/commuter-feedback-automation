@@ -1,65 +1,132 @@
 # Commuter Feedback Automation
 
-A small portfolio project showing practical workflow automation and data analytics with standard Microsoft tools.
+A working demonstration of business process automation with Microsoft Power Automate. Commuter feedback is collected through Microsoft Forms, routed by transport mode, logged to an Excel table, and acknowledged by email. It's all built with standard Microsoft 365 tools and no code.
 
-## Objective
+> **Demonstration project.** This is a portfolio piece, built and tested with synthetic data. It is not a production customer service system, and no feedback is sent to any real transport operator.
 
-Collect commuter feedback through Microsoft Forms, log every response to an Excel table, route each submission by transport mode (Bus, Train or Taxi), send the commuter an acknowledgement email, and summarise the feedback in a Power BI report.
+## Business problem
 
-## Proposed architecture
+Feedback that arrives through a form often sits in an inbox and gets sorted by hand. Someone has to read each submission, decide which team it belongs to, copy it into a tracker and reply to the sender. That's slow, inconsistent and easy to forget.
+
+This workflow automates those routine steps:
+
+- **Sorting:** each submission is assigned to the right team automatically.
+- **Record keeping:** every submission is logged to one structured table.
+- **Replying:** an acknowledgement is sent only when the commuter asked for one.
+
+## Technologies
+
+| Tool | Role |
+|---|---|
+| Microsoft Forms | Feedback form with 7 questions |
+| Power Automate (automated cloud flow) | Trigger, routing, logic and orchestration |
+| Excel Online (Business) in OneDrive for Business | Feedback log, in a single table called `FeedbackLog` |
+| Office 365 Outlook | Acknowledgement email |
+
+Only standard connectors are used. There are no premium connectors, custom code, external APIs or databases.
+
+## Workflow
 
 ```
-Microsoft Forms ──(trigger: new response)──> Power Automate cloud flow
-                                               │
-                                               ├─ Get response details
-                                               ├─ Switch on Mode: Bus / Train / Taxi / Default
-                                               │     └─ set one RoutedTeam variable
-                                               ├─ Compose "Email provided" (Yes/No)
-                                               ├─ Excel Online (Business): add row to FeedbackLog
-                                               └─ Office 365 Outlook: send acknowledgement
-                                                        (only if an email was given)
-
-Excel workbook in OneDrive for Business ──> Power BI Desktop (local .pbix report)
+Microsoft Forms: new response
+        │
+        ▼
+Get response details
+        │
+        ▼
+Switch on "Mode of transport"   →  sets one RoutedTeam variable
+   Bus     → Bus Operations
+   Train   → Rail Operations
+   Taxi    → Taxi Services
+   Default → Unrouted
+        │
+        ▼
+Compose "Email provided"        →  Yes / No
+        │
+        ▼
+Excel: add one row to FeedbackLog (10 columns)
+        │
+        ▼
+Condition: Email provided = Yes?
+   Yes → Outlook: send acknowledgement
+   No  → skip (run still succeeds)
 ```
 
-Design choices:
+## Features
 
-- **Excel Online in OneDrive, not SharePoint.** One workbook with one table is enough for a demo, and it needs no site permissions.
-- **One table, not one sheet per mode.** Routing is shown by a `RoutedTeam` column set from one variable, with a single Excel action after the Switch, so Power BI reads a single tidy table.
-- **Standard connectors only.** Microsoft Forms, Excel Online (Business) and Office 365 Outlook are all standard, so no premium Power Automate licence is needed.
-- **Power BI Desktop only.** The report is saved as a local `.pbix` file with screenshots. Publishing to the Power BI service would need a Pro licence and is out of scope.
+- **Category routing.** A Switch maps each transport mode to a team label. A Default branch catches anything unexpected as `Unrouted`, so nothing fails silently. The team names are demonstration labels written to the table only.
+- **One logging step.** Routing only sets a variable, and a single Excel action runs afterwards, so no step is repeated across branches.
+- **Conditional acknowledgement.** One Yes/No value decides both the `EmailProvided` column and whether an email is sent, so the two can't disagree. A blank email never reaches the send step.
+- **Log first, email second.** The row is written before the email is sent, so a failed email never loses a record.
+- **Data minimisation.** The table records only whether an email was given, not the address itself. It doesn't claim that the email was delivered.
+- **Honest acknowledgement wording.** The email confirms the response was recorded and states that it is a demo, that nothing is forwarded to an operator, and that no action will follow.
 
-## Feedback fields and data
+**`FeedbackLog` columns:** `ResponseId`, `SubmittedAt` (UTC), `Mode`, `RoutedTeam`, `ServiceRouteStation`, `TripDate`, `FeedbackType`, `Rating`, `Comments`, `EmailProvided`
 
-Seven form questions (Mode, Service/route/station, Date of trip, Feedback type, Rating, Comments, optional Email) feed one Excel table, `FeedbackLog`, with 10 columns. The flow adds three of them itself: `ResponseId`, `SubmittedAt` and `RoutedTeam`, plus an `EmailProvided` Yes/No column. The workbook doesn't store the raw email address, and it doesn't track delivery status. The exact spec is in [docs/form-and-excel-spec.md](docs/form-and-excel-spec.md).
+## Test results
 
-Routing, using demonstration labels only: Bus goes to Bus Operations, Train to Rail Operations, and Taxi to Taxi Services.
+The project owner ran and checked these tests by hand, with 10 synthetic submissions:
+
+| Check | Result |
+|---|---|
+| Power Automate runs | 10 / 10 succeeded |
+| Excel rows | 10 logged, with no duplicate or blank rows |
+| Routing | Bus 4, Train 3, Taxi 3, all to the correct team, none Unrouted |
+| Acknowledgements | 9 sent and received, 1 correctly skipped (no email given) |
+| Data types | Date/time, date and rating stored as real Excel values |
+
+The planned split was 6 sent and 4 skipped. During the run, email addresses were entered for more cases than planned. The details, and what was and wasn't covered, are in [docs/test-results.md](docs/test-results.md).
+
+## Reproduce it
+
+You need a Microsoft 365 **work or school** account with Forms, Power Automate, OneDrive for Business and Outlook. The Forms trigger and the Excel (Business) connector don't support personal accounts. Allow about 1 to 2 hours.
+
+1. **Form and workbook:** follow [docs/setup-guide.md](docs/setup-guide.md). Exact names and settings are in [docs/form-and-excel-spec.md](docs/form-and-excel-spec.md).
+2. **Flow:** follow [docs/flow-build-guide.md](docs/flow-build-guide.md). It starts with a connector permission check, then walks through every action and includes troubleshooting.
+3. **Test:** follow [docs/flow-test-plan.md](docs/flow-test-plan.md) using [test-data/test-cases.csv](test-data/test-cases.csv). Send acknowledgements only to your own address.
+
+## Screenshots
+
+Capture checklist and privacy notes: [docs/screenshots/README.md](docs/screenshots/README.md)
+
+<!-- Uncomment once the files are added to docs/screenshots/
+![Feedback form](docs/screenshots/01-form-overview.png)
+![Flow overview](docs/screenshots/02-flow-overview.png)
+![Switch routing](docs/screenshots/03-switch-routing.png)
+![FeedbackLog table](docs/screenshots/04-excel-feedbacklog.png)
+![Run history](docs/screenshots/05-run-history.png)
+-->
+
+## Limitations
+
+This is a demonstration, not a production system:
+
+- **Scale:** it was tested with 10 synthetic submissions only. Excel isn't a database, and the connector has throttling and file-locking limits.
+- **Routing:** routing is a label in a table. No team inbox, ticketing or case tracking is involved, and there's no follow-up workflow.
+- **Email:** Forms can't validate email format, so a typo causes a failed run, although the row is still logged. There are no retries or alerts. Resubmitting a failed run would create a duplicate row.
+- **Time:** times are stored in UTC.
+- **Ownership:** the flow runs under one user's account and connections. A real deployment would need a service account, access controls and a data retention policy.
+- **Reporting:** dashboards such as Power BI were deliberately left out of scope to keep the focus on process automation.
 
 ## Repository contents
 
 | Path | Purpose |
 |---|---|
-| `docs/form-and-excel-spec.md` | Exact form questions and settings, Excel table schema, routing rules, and the schema check against the flow and Power BI |
-| `docs/setup-guide.md` | Beginner-friendly manual steps to create the form and workbook |
-| `docs/flow-build-guide.md` | Connector permission check, step-by-step flow build, failed-send guidance, run history and troubleshooting |
-| `docs/flow-test-plan.md` | How to run the 10 test cases and the 10 checks to verify |
-| `test-data/test-cases.csv` | 10 synthetic test cases with expected results. Test data only. Every comment is tagged `[TEST TCxx]` |
+| `docs/form-and-excel-spec.md` | Form questions and settings, Excel schema and routing rules |
+| `docs/setup-guide.md` | Steps to create the form and workbook |
+| `docs/flow-build-guide.md` | Connector check, flow build, failure handling and troubleshooting |
+| `docs/flow-test-plan.md` | Planned test procedure and checks |
+| `docs/test-results.md` | Actual test results and how they differ from the plan |
+| `docs/screenshots/` | Screenshot checklist (images are added by the owner) |
+| `test-data/test-cases.csv` | 10 synthetic test cases. Every test comment is tagged `[TEST TCxx]` |
 
-## Prerequisites
+## Status
 
-- A Microsoft 365 **work or school** account. The Forms trigger and Excel Online (Business) connector do not work with personal Microsoft accounts.
-- Microsoft Forms, Power Automate, OneDrive for Business and Outlook enabled for that account, and no tenant policy (DLP) blocking the three connectors.
-- Power BI Desktop (free) on a Windows 10/11 PC.
-- Test data only. No real commuter personal data. Test cases live in `test-data/`, and every comment submitted from them starts with `[TEST TCxx]` so the rows can be identified.
-
-## Implementation status
-
-| Phase | Scope | Status |
-|---|---|---|
-| 1 | Feasibility, architecture, project setup | Done, approved |
-| 2 | Form and workbook spec, setup guide, test cases | Done, approved. The user created and verified the form and workbook, with no responses submitted |
-| 3 | Build Power Automate flow and test with sample responses | Build guide and test plan done, awaiting review. The flow hasn't been built or tested yet |
-| 4 | Power BI summary report and screenshots | Not started |
-| 5 | Final documentation for portfolio | Not started |
-
-The form and workbook exist (user-verified). No flow exists yet, and connector permissions are still unverified. Part A of the build guide checks them.
+| Item | Status |
+|---|---|
+| Form and Excel workbook | Done, verified by the owner |
+| Power Automate flow (routing, logging, conditional email) | Done, verified by the owner |
+| Testing with 10 synthetic cases | Done, verified by the owner |
+| Documentation | Done |
+| Screenshots | **To do**, captured by hand by the owner |
+| Power BI dashboard | Deliberately excluded from scope |

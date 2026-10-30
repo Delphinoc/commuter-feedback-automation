@@ -38,9 +38,6 @@ About 20 minutes. You do this in your browser, signed in with your work or schoo
    - each choice question has exactly 3 options and no "Other"
 2. Close the preview **without submitting**. Don't submit any responses yet. A response submitted before the flow exists will never be logged.
 3. In Excel, click inside the table and check that **Table Design > Table Name** shows `FeedbackLog` and that the headers match exactly.
-4. Reply in the project thread with:
-   - "Form and workbook created and verified", or what didn't match
-   - whether "Only people in my organization" or "Anyone can respond" was used
-   - anything in your tenant that looked different from this guide
+4. Note which **Who can fill out** option you chose, because it affects who can test the form.
 
-Don't share the form link publicly. The 10 test cases in `test-data/test-cases.csv` are submitted in Phase 3, after the flow is built.
+Don't share the form link publicly. The 10 test cases in `test-data/test-cases.csv` are submitted only after the flow is built. See [flow-test-plan.md](flow-test-plan.md).
