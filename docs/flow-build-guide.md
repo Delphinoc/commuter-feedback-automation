@@ -99,7 +99,7 @@ The finished expression has this shape. The part in angle brackets is what the d
 if(empty(trim(coalesce(<Email for acknowledgement (optional)>,''))),'No','Yes')
 ```
 
-`coalesce(...,'')` turns an unanswered question into an empty string, `trim` ignores spaces only, and `empty` checks for blank. The result is always `Yes` or `No`. Both the Excel column and the email condition use this one output, so they can never disagree.
+`coalesce(...,'')` turns an unanswered question into an empty string, `trim` ignores spaces only, and `empty` checks for blank. The result is always `Yes` or `No`. The Excel column and the email Condition both use this one output, so the logged value and the send decision come from the same calculation.
 
 ### B6. Add a row into a table
 

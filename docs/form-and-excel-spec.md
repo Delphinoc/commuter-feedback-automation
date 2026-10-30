@@ -18,6 +18,8 @@ The exact spec for the Microsoft Form, the Excel table and the routing rules. Na
 | 6 | Comments | Text | Yes | Long answer **on** |
 | 7 | Email for acknowledgement (optional) | Text (short) | No | Long answer off. Subtitle: `Leave blank if you do not want a reply.` |
 
+> **The live demo form differs on question 1:** it has the "Other" option turned **on** (visible in `screenshots/01-form-overview.png`). An "Other" answer doesn't match any Switch case, so it should be routed to `Default` and logged as `Unrouted`. That path wasn't tested. If you're rebuilding the form, keep "Other" off as specified. Whether question 4 has "Other" isn't visible in the screenshot.
+
 **Form settings** (... menu > Settings):
 
 - Who can fill out this form: **Only people in my organization** while testing. This is always allowed and stops spam. "Anyone can respond" is more realistic, but some tenants block it, and the flow works the same either way.
@@ -44,6 +46,8 @@ The exact spec for the Microsoft Form, the Excel table and the routing rules. Na
 | 8 | Rating | Whole number 1 to 5 | Number, 0 decimals | Q5 | `2` |
 | 9 | Comments | Text | Text | Q6 | `Train was delayed 15 min` |
 | 10 | EmailProvided | Text: `Yes` / `No` | Text | Flow: is Q7 non-blank? | `Yes` |
+
+In the live demo workbook, the first header is spelled `ResponseID`. Either spelling works, because the flow's column fields come from whatever headers the table has. Its date and number display formats also differ slightly from the formats above: dates show as `m/d/yyyy`, and Rating shows one decimal. The values themselves are real dates and numbers.
 
 Design notes:
 
