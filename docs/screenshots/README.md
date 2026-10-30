@@ -20,8 +20,9 @@ Each image was checked before it was added:
 
 What is visible:
 
-- the account initials "DC" in the top-right corner (images 01, 02 and 04)
-- in image 02, the Power Automate environment name, which shows the organisation ("National University of Si...")
+- the account initials "DC" in the top-right corner (images 01 and 04)
+
+Image 02 was cropped to remove the top navigation bar, which showed the environment name and the account initials. The full flow diagram is kept.
 
 ## Replacing a screenshot
 
